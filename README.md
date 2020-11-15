@@ -1,4 +1,5 @@
 # todolist
+<<<<<<< HEAD
 
 ## Project setup
 ```
@@ -27,3 +28,6 @@ yarn run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+vue实现代办事项
+>>>>>>> e38caac3fbb78efe00875a9d4831dd5985b66675
