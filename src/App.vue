@@ -1,28 +1,107 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+ <header>ToDoList</header>
+  <todo-input @addItem="addChildrenItem"/>
+  <todo-list :childrenList="list" @removeItem="removeChildrenItem"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import TodoInput from "./components/input"
+import TodoList from "./components/list"
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components:{
+    TodoInput,
+    TodoList
+  },
+  data() {
+    return {
+      list:["吃饭","睡觉","撸猫"],
+    }
+  },
+  methods:{
+    addChildrenItem(val){
+      this.list.push(val)
+    },
+    removeChildrenItem(index){
+      this.list.splice(index,1)
+    }
   }
 }
 </script>
 
 <style>
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+p {
+  margin: 0;
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  width: 400px;
+  height: 500px;
+  margin: 80px auto;
+  padding-top: 20px;
+}
+
+header {
+  font-size: 28px;
+  line-height: 40px;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+.todo-input {
+  display: flex;
+  margin-bottom: 20px;
+}
+.todo-input input {
+  flex: 1;
+  height: 34px;
+  margin-right: 20px;
+  padding-left: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.todo-input button {
+  width: 70px;
+  height: 38px;
+  background-color: cadetblue;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.todo-item {
+  display: flex;
+  height: 40px;
+  padding: 0 20px;
+}
+
+.todo-item span {
+  padding-left: 10px;
+}
+
+.todo-item p {
+  flex: 1;
+}
+
+.todo-item button {
+  width: 50px;
+  height: 32px;
+  background-color: red;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.todo-nodata {
+  font-size: 40px;
+  line-height: 80px;
+  text-align: center;
+  color: brown;
 }
 </style>
