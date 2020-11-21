@@ -1,8 +1,8 @@
 <template>
   <div id="app">
  <header>ToDoList</header>
-  <todo-input @addItem="addChildrenItem"/>
-  <todo-list :childrenList="list" @removeItem="removeChildrenItem"/>
+  <todo-input/>
+  <todo-list/>
   </div>
 </template>
 
@@ -14,19 +14,6 @@ export default {
   components:{
     TodoInput,
     TodoList
-  },
-  data() {
-    return {
-      list:["吃饭","睡觉","撸猫"],
-    }
-  },
-  methods:{
-    addChildrenItem(val){
-      this.list.push(val)
-    },
-    removeChildrenItem(index){
-      this.list.splice(index,1)
-    }
   }
 }
 </script>

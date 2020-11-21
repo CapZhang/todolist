@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import Bus from "../Bus"
 export default {
     data() {
         return {
@@ -17,7 +18,7 @@ export default {
             this.text=e.target.value
         },
         addItem(){
-            this.$emit("addItem",this.text)
+            Bus.$emit("addItem",this.text)
             this.text=""
         }
     },
