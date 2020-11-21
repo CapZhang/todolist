@@ -1,26 +1,30 @@
 <template>
- <section class="todo-input">
-   <input type="text" placeholder="请输入代办事项" v-model="text" v-on:input="inputText">
-   <button v-on:click="addItem">添加</button>
- </section>
+  <section class="todo-input">
+    <input
+      type="text"
+      placeholder="请输入代办事项"
+      v-model="text"
+      v-on:input="inputText"
+    />
+    <button v-on:click="addItem">添加</button>
+  </section>
 </template>
 
 <script>
-import Bus from "../Bus"
 export default {
-    data() {
-        return {
-            text:""
-        }
+  data() {
+    return {
+      text: "",
+    };
+  },
+  methods: {
+    inputText(e) {
+      this.text = e.target.value;
     },
-    methods: {
-        inputText(e){
-            this.text=e.target.value
-        },
-        addItem(){
-            Bus.$emit("addItem",this.text)
-            this.text=""
-        }
+    addItem() {
+      this.$store.dispatch("addItem", this.text);
+      this.text = "";
     },
-}
+  },
+};
 </script>

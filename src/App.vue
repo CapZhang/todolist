@@ -1,21 +1,21 @@
 <template>
   <div id="app">
- <header>ToDoList</header>
-  <todo-input/>
-  <todo-list/>
+    <header>ToDoList</header>
+    <todo-input />
+    <todo-list />
   </div>
 </template>
 
 <script>
-import TodoInput from "./components/input"
-import TodoList from "./components/list"
+import TodoInput from "./components/input";
+import TodoList from "./components/list";
 export default {
-  name: 'App',
-  components:{
+  name: "App",
+  components: {
     TodoInput,
-    TodoList
-  }
-}
+    TodoList,
+  },
+};
 </script>
 
 <style>
