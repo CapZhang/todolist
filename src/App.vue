@@ -1,19 +1,24 @@
 <template>
   <div id="app">
+    <todo-read />
     <header>ToDoList</header>
     <todo-input />
     <todo-list />
+    
   </div>
 </template>
 
 <script>
 import TodoInput from "./components/input";
 import TodoList from "./components/list";
+import TodoRead from "./components/readJson";
+
 export default {
   name: "App",
   components: {
     TodoInput,
     TodoList,
+    TodoRead
   },
 };
 </script>
@@ -32,13 +37,17 @@ p {
   width: 400px;
   height: 500px;
   margin: 80px auto;
+  padding: 10px;
   padding-top: 20px;
+  background-color: bisque;
+  position: relative;
 }
 
 header {
-  font-size: 28px;
+  font-size: 50px;
   line-height: 40px;
   text-align: center;
+  padding-bottom: 40px;
 }
 .todo-input {
   display: flex;
@@ -90,5 +99,12 @@ header {
   line-height: 80px;
   text-align: center;
   color: brown;
+}
+
+.todo-read {
+  font-size: 12px;
+  position: absolute;
+  z-index: 999;
+  right: 10px;
 }
 </style>

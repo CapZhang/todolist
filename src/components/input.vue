@@ -19,10 +19,10 @@ export default {
   },
   methods: {
     inputText(e) {
-      this.text = e.target.value;
+      this.inputArry = [{"name":e.target.value}]
     },
     addItem() {
-      this.$store.dispatch("addItem", this.text);
+      this.$store.dispatch("addItem", this.inputArry);
       this.text = "";
     },
   },
