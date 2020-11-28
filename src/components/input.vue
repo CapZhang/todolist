@@ -4,9 +4,10 @@
       type="text"
       placeholder="请输入代办事项"
       v-model="text"
-      v-on:input="inputText"
+      v-on:input=inputText
+      v-on:keyup.enter="addItem"
     />
-    <button v-on:click="addItem">添加</button>
+    <button v-on:click=addItem>添加</button>
   </section>
 </template>
 
@@ -19,11 +20,17 @@ export default {
   },
   methods: {
     inputText(e) {
-      this.inputArry = [{"name":e.target.value}]
+      if (e.target.value != "") {
+        this.inputArry = [{"name":e.target.value}]
+      }
+      
     },
     addItem() {
-      this.$store.dispatch("addItem", this.inputArry);
-      this.text = "";
+      if (this.inputArry != "") {
+        this.$store.dispatch("addItem", this.inputArry);
+        this.inputArry = "";
+        this.text = "";
+      }
     },
   },
 };

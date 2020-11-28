@@ -1,8 +1,11 @@
 .DS_Store
 node_modules
 /dist
-
-
+Scripts
+include
+Lib
+__pycache__
+*.pyc
 # local env files
 .env.local
 .env.*.local

@@ -4,7 +4,7 @@
     <header>ToDoList</header>
     <todo-input />
     <todo-list />
-    
+    <todo-save />
   </div>
 </template>
 
@@ -12,13 +12,16 @@
 import TodoInput from "./components/input";
 import TodoList from "./components/list";
 import TodoRead from "./components/readJson";
+import TodoSave from "./components/saveTodo";
+
 
 export default {
   name: "App",
   components: {
     TodoInput,
     TodoList,
-    TodoRead
+    TodoRead,
+    TodoSave
   },
 };
 </script>
