@@ -2,6 +2,7 @@
   <section class="todo-read">
     <div v-show="readStatusDoing">正在读取...</div>
     <div v-show="!readStatusDoing && is_hiden">读取完成</div>
+    <button v-on:click="readJsonDoc">重载</button>
   </section>
 </template>
 
@@ -25,26 +26,25 @@ export default {
         this.hiden_ele();
       }, 5000);
     },
-    readJsonDoc(path) {
-      const fs = require("fs");
-      console.log(path);
-      try {
-        const json_data = fs.readFileSync(path);
-        console.log(json_data);
-        // this.temp = json_data;
-      } catch (e) {
-        console.log("读取失败");
-      }
+    readJsonDoc() {
+      console.log("++++++++++++++++");
+      console.log(this);
+      this.$https
+        .get("/todo")
+        .then(function (res) {
+          console.log(res);
+          alert(res);
+        })
+        .catch(function (err) {
+          alert(err);
+        });
     },
   },
-  mounted: function () {
+  created () {
     // mounted vue的生命周期钩子，组件加载后使用
-    if (this.is_run === true) {
-      this.readJsonDoc("./././todo/test.json","utf-8");
+     this.readJsonDoc();
       this.readStatusDoing = false;
       this.$store.dispatch("readItems", this.temp);
-      this.is_run = false;
-    }
   },
   watch: {
     readStatusDoing() {

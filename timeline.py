@@ -2,14 +2,14 @@ from www.init.init_app import app
 from www.DB.db_script.CRUD import db,User,ToDoDetails,datetime,insert_ToDoDetails
 from flask import jsonify,request
 
-@app.route("/<int:index>",methods=["GET"],endpoint="index")
+@app.route("/api/<int:index>",methods=["GET"],endpoint="index")
 def index(index):
     if User.query.get(index):
         return User.query.get(1).username
     else:
         return "查无此ID"
 
-@app.route("/todo/<status>",methods=["GET"],endpoint="get_todo_details")  
+@app.route("/api/todo/<status>",methods=["GET"],endpoint="get_todo_details")  
 def get_todo_details(status):
     res = ToDoDetails.query.filter(ToDoDetails.status==status).all()
     if res:
@@ -33,7 +33,7 @@ def get_todo_details(status):
     else:
         return "没有这个状态"
 
-@app.route("/todo",methods=["GET"],endpoint="get_todo_details_all")  
+@app.route("/api/todo",methods=["GET"],endpoint="get_todo_details_all")  
 def get_todo_details_all():
     res = ToDoDetails.query.filter().all()
     if res:
@@ -57,7 +57,7 @@ def get_todo_details_all():
     else:
         return "没有这个状态"
 
-@app.route("/todo/post",methods=["POST"],endpoint="post_todo_details")
+@app.route("/api/todo/post",methods=["POST"],endpoint="post_todo_details")
 def post_todo_details():
     # 判断数据有没有ID 字段，有的话就更新ID，没有就insert
     res = request.json
