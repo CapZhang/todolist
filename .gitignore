@@ -4,6 +4,7 @@ node_modules
 Scripts
 include
 Lib
+db/*
 __pycache__
 *.pyc
 # local env files
