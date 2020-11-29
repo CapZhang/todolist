@@ -8,15 +8,27 @@ db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    pswd = db.Column(db.String(120), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=True)
+    pswd = db.Column(db.String(120), unique=True, nullable=True)
 
     def __repr__(self):
         return '<User %r>' % self.username
 
 # 待办事项明细
 class ToDoDetails(db.Model):
-
+    '''
+    @status:
+        1. index
+        2. start
+        3. stop
+        4. done
+        5. drop
+    @level:
+        1. IN Important but urgent,重要紧急
+        2. IU Important but non-urgent,重要不紧急
+        3. UN UNImportant and non-urgent, 不重要不紧急
+        4. UU Unimportant and urgent,不重要紧急
+    '''
     id = db.Column(db.Integer, primary_key=True)
     # 待办事项名称，不可为空
     name = db.Column(db.String, unique=False, nullable=False)
@@ -25,9 +37,9 @@ class ToDoDetails(db.Model):
     # 待办事项状态，可为空
     status = db.Column(db.String, unique=False, nullable=True)
     # 优先级，可为空
-    level = db.Column(db.Integer, unique=False, nullable=True)
+    level = db.Column(db.String, unique=False, nullable=True)
     # 子待办ID，可为空
-    sub_todo_id = db.Column(db.Integer, nullable=True)
+    sub_todo_id = db.Column(db.String, nullable=True)
     # 开始时间和结束时间，列表
     start_time = db.Column(db.String, unique=False, nullable=True)
     end_time = db.Column(db.String, unique=False, nullable=True)
