@@ -19,7 +19,8 @@ export default new Vuex.Store({
     },
     READ_ITEMS(state, jsonitems) {
       // 这里不能使用concat是因为concat不改变原数组
-      state.items.push.apply(state.items,jsonitems)
+      console.log("read_items");
+      state.items=jsonitems
     }
   },
   actions: {

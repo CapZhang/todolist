@@ -12,9 +12,10 @@ export default {
     return {
       readStatusDoing: true,
       readitemsStr: ["123"],
-      temp: [{ name: "吃饭j" }, { name: "睡觉j" }],
+      temp: [],
       is_run: true,
-      is_hiden: true,
+      is_hiden: true
+     
     };
   },
   methods: {
@@ -27,24 +28,23 @@ export default {
       }, 5000);
     },
     readJsonDoc() {
-      console.log("++++++++++++++++");
-      console.log(this);
+      console.log("readJson");
       this.$https
         .get("/todo")
-        .then(function (res) {
-          console.log(res);
-          alert(res);
+        .then((res)=>{
+          this.temp = res.data
+          this.readStatusDoing = false;
+          console.log(this.temp);
+          this.$store.dispatch("readItems", this.temp);
         })
-        .catch(function (err) {
-          alert(err);
+        .catch((err)=>{
+          return err
         });
     },
   },
-  created () {
+  created() {
     // mounted vue的生命周期钩子，组件加载后使用
-     this.readJsonDoc();
-      this.readStatusDoing = false;
-      this.$store.dispatch("readItems", this.temp);
+    this.readJsonDoc()
   },
   watch: {
     readStatusDoing() {
