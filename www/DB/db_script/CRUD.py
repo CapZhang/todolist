@@ -26,7 +26,7 @@ def insert_ToDoDetails(name,status="index",level="IN",sub_todo_id=None):
     '''
     # create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     create_time = datetime.datetime.now()
-    data = ToDoDetails(name=name,create_time=create_time,status=status,level=level,sub_todo_id=sub_todo_id,start_time=None,end_time=None,use_time=None,progress_bar="0")
+    data = ToDoDetails(name=name,create_time=create_time,status=status,level=level,sub_todo_id=sub_todo_id,start_time=None,end_time=None,use_time=None,progress_bar="0",deadline=None,reminder_time=None)
     try:
         db.session.add(data)
         db.session.commit()

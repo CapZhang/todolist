@@ -7,8 +7,8 @@
         v-bind:key="index + item.name"
         
       >
-        <span>{{ index + 1 }}</span>
-        <p>{{ ".    " + item.name }}</p>
+        <span>{{ index + 1 }}.</span>
+        <p>{{ item.name }}<br><span class="todo-time">时间: {{ item.deadline }}</span></p>
         <button @click="removeItem(index)">完成</button>
       </li>
     </ul>

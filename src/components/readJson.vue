@@ -11,31 +11,22 @@ export default {
   data() {
     return {
       readStatusDoing: true,
-      readitemsStr: ["123"],
-      temp: [],
-      is_run: true,
       is_hiden: true
-     
     };
   },
   methods: {
-    hiden_ele() {
-      this.is_hiden = false;
-    },
     timer() {
       return setTimeout(() => {
-        this.hiden_ele();
-      }, 5000);
+        this.is_hiden = false;
+      }, 2000);
     },
     readJsonDoc() {
       console.log("readJson");
       this.$https
         .get("/todo")
         .then((res)=>{
-          this.temp = res.data
           this.readStatusDoing = false;
-          console.log(this.temp);
-          this.$store.dispatch("readItems", this.temp);
+          this.$store.dispatch("readItems", res.data);
         })
         .catch((err)=>{
           return err

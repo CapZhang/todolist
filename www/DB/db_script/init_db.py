@@ -43,6 +43,10 @@ class ToDoDetails(db.Model):
     # 开始时间和结束时间，列表
     start_time = db.Column(db.String, unique=False, nullable=True)
     end_time = db.Column(db.String, unique=False, nullable=True)
+    # 截止时间
+    deadline = db.Column(db.DateTime, unique=False, nullable=True)
+    # 提醒时间
+    reminder_time = db.Column(db.DateTime, unique=False, nullable=True)
     #  完成任务时长
     use_time = db.Column(db.String, unique=False, nullable=True)
     # 任务进度
