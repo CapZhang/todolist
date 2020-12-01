@@ -2,6 +2,11 @@ from www.init.init_app import app
 from www.DB.db_script.CRUD import db,User,ToDoDetails,datetime,insert_ToDoDetails
 from flask import jsonify,request
 
+
+@app.route("/",methods=["GET"],endpoint="home_page")
+def home_page():
+    return "<h1> 欢迎来到时间线 </h1>"
+
 @app.route("/api/<int:index>",methods=["GET"],endpoint="index")
 def index(index):
     if User.query.get(index):

@@ -2,7 +2,7 @@
   <section class="todo-read">
     <div v-show="readStatusDoing">正在读取...</div>
     <div v-show="!readStatusDoing && is_hiden">读取完成</div>
-    <button v-on:click="readJsonDoc">重载</button>
+    <!-- <button v-on:click="readJsonDoc">重载</button> -->
   </section>
 </template>
 
