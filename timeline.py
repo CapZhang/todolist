@@ -1,7 +1,7 @@
 from www.init.init_app import app
 from www.DB.db_script.CRUD import db,User,ToDoDetails,datetime,insert_ToDoDetails
 from flask import jsonify,request
-import datetime
+from datetime import datetime
 
 @app.route("/",methods=["GET"],endpoint="home_page")
 def home_page():
@@ -17,10 +17,17 @@ def index(index):
 @app.route("/api/todo",methods=["GET"],endpoint="get_todo_details_all")  
 def get_todo_details_all():
     res = ToDoDetails.query.filter().all()
+    GMT_FORMAT =  '%a, %d %b %Y %H:%M:%S GMT'
     if res:
         json_data = []
         for res_temp in res:
             # datetime_create_time = res_temp.create_time
+            if res_temp.create_time:
+                res_temp.create_time=res_temp.create_time.strftime("%Y-%m-%d %X")
+            if res_temp.deadline:
+                res_temp.deadline=res_temp.deadline.strftime("%Y-%m-%d %X")
+            if res_temp.reminder_time:
+                res_temp.reminder_time=res_temp.reminder_time.strftime("%Y-%m-%d %X")
             data = {
                 "id": res_temp.id,
                 "name": res_temp.name,

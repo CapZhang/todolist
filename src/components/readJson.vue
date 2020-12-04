@@ -26,6 +26,8 @@ export default {
         .get("/todo")
         .then((res)=>{
           this.readStatusDoing = false;
+          console.log(res.data);
+          
           this.$store.dispatch("readItems", res.data);
         })
         .catch((err)=>{

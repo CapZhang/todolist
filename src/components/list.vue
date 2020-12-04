@@ -1,14 +1,16 @@
 <template >
   <section>
-      <ul class="todo-list" v-show="todoList.length">
+    <ul class="todo-list" v-show="todoList.length">
       <li
         class="todo-item"
         v-for="(item, index) in todoList"
         v-bind:key="index + item.name"
-        
       >
         <span>{{ index + 1 }}.</span>
-        <p>{{ item.name }}<br><span class="todo-time">时间: {{ item.deadline }}</span></p>
+        <p>
+          {{ item.name }}<br /><span class="todo-time" v-if="item.deadline">截止时间: {{ item.deadline }}</span
+          >
+        </p>
         <button @click="removeItem(index)">完成</button>
       </li>
     </ul>
@@ -19,17 +21,16 @@
 </template>
 
 <script>
-
 export default {
-  computed :{
-    todoList: function(){
-      return this.$store.state.items
-    }
+  computed: {
+    todoList: function () {
+      return this.$store.state.items;
+    },
   },
   methods: {
     removeItem(index) {
       this.$store.dispatch("removeItem", index);
-    }
+    },
   },
 };
 </script>
