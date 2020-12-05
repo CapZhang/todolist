@@ -15,7 +15,12 @@ export default new Vuex.Store({
       state.items.push.apply(state.items,text)
     },
     REMOVE_ITEM(state, index) {
-      state.items.splice(index);
+      for(let i=0;i<state.items.length;i++){
+        if(i == index){
+          state.items.splice(index,1);
+          break;
+        }
+      }
     },
     READ_ITEMS(state, jsonitems) {
       // 这里不能使用concat是因为concat不改变原数组

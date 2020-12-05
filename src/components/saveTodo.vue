@@ -11,6 +11,13 @@ export default {
     methods: {
         saveItem() {
             console.log(this.$store.state.items);
+            this.$https
+            .post("/todo/post",this.$store.state.items)
+            .then(
+                res=>{
+                    console.log("res=>",res);
+                }
+            )
         }
     },
 }
