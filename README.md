@@ -31,6 +31,9 @@ vue实现代办事项
 
 _________________
 # 生成requirement.txt
+## 1
+ pip freeze > requirements.txt
+## 2
 安装
 `pip install pipreqs --default-timeout=100`
 在当前目录生成
