@@ -1,10 +1,23 @@
 <template>
   <div id="app">
-    <todo-read />
-    <header>ToDoList</header>
-    <todo-input />
-    <todo-list />
-    <todo-save />
+    <div class="sidebar">
+      <button>首页</button>
+      <button>待办事项</button>
+    </div>
+    <div class="todo">
+      <div class="topbar"></div>
+      <div class="content">
+        <div class="todo-todo">
+        <todo-read />
+        <header>ToDoList</header>
+        <todo-input />
+        <todo-list />
+        <todo-save />
+      </div>
+      <div class="resize" v-on:mousedown="dragResize"></div>
+      <div class="todo-details">这里填写备注</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -13,101 +26,43 @@ import TodoInput from "./components/input";
 import TodoList from "./components/list";
 import TodoRead from "./components/readJson";
 import TodoSave from "./components/saveTodo";
-
-
+import "./themes/defaut-dark/defaut-dark.css";
 export default {
   name: "App",
   components: {
     TodoInput,
     TodoList,
     TodoRead,
-    TodoSave
+    TodoSave,
+  },
+  methods: {
+    dragResize(e) {
+      // 拖动中间竖线改变待办列表和备注区域的布局宽度
+      let resize = document.getElementsByClassName("resize")[0];
+      let left = document.getElementsByClassName("todo-todo")[0];
+      let right = document.getElementsByClassName("todo-details")[0];
+      let box = document.getElementsByClassName("todo")[0];
+      let startX = e.clientX;
+      resize.left = resize.offsetLeft;
+      document.onmousemove = function (e) {
+        let endX = e.clientX;
+        let moveLen = resize.left + (endX - startX);
+        let maxT = box.clientWidth - resize.offsetWidth;
+        if (moveLen < 150) moveLen = 150;
+        if (moveLen > maxT - 150) moveLen = maxT - 150;
+        resize.style.left = moveLen;
+        left.style.width = moveLen + "px";
+        right.style.width = box.clientWidth - moveLen - 25 + "px";
+      };
+      document.onmouseup = function (evt) {
+        console.log(evt);
+        document.onmousemove = null;
+        document.onmouseup = null;
+        resize.releaseCapture && resize.releaseCapture();
+      };
+      resize.setCapture && resize.setCapture();
+      return false;
+    },
   },
 };
 </script>
-
-<style>
-ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-p {
-  margin: 0;
-}
-#app {
-  width: 400px;
-  height: 500px;
-  margin: 80px auto;
-  padding: 10px;
-  padding-top: 20px;
-  background-color: bisque;
-  position: relative;
-}
-
-header {
-  font-size: 50px;
-  line-height: 40px;
-  text-align: center;
-  padding-bottom: 40px;
-}
-.todo-input {
-  display: flex;
-  margin-bottom: 20px;
-}
-.todo-input input {
-  flex: 1;
-  height: 34px;
-  margin-right: 20px;
-  padding-left: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.todo-input button {
-  width: 70px;
-  height: 38px;
-  background-color: cadetblue;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-}
-
-.todo-item {
-  display: flex;
-  height: 40px;
-  padding: 0 20px;
-}
-
-.todo-item span {
-  padding-left: 10px;
-}
-
-.todo-item p {
-  flex: 1;
-}
-
-.todo-item button {
-  width: 50px;
-  height: 32px;
-  background-color: red;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-}
-
-.todo-nodata {
-  font-size: 40px;
-  line-height: 80px;
-  text-align: center;
-  color: brown;
-}
-
-.todo-read {
-  font-size: 12px;
-  position: absolute;
-  z-index: 999;
-  right: 10px;
-}
-</style>
