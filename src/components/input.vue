@@ -11,6 +11,8 @@
       />
       <button v-on:click="addItem" class="todo-input-add-button">添加</button>
       <div>
+        
+        <button v-on:click="del_time" class="clear-info">×</button>
         <datetime
           type="datetime"
           v-model="datetime"
@@ -18,9 +20,9 @@
           hidden-name="123123"
           auto
         ></datetime>
-        <button v-on:click="del_time">取消时间</button>
+        <span class="todo-info">截止时间： </span>
       </div>
-      <span>展示：{{ chDate(datetime) }}</span>
+      <!-- <span>展示：{{ chDate(datetime) }}</span> -->
     </div>
   </section>
 </template>

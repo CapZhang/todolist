@@ -79,8 +79,11 @@ def get_todo_details(status):
 def post_todo_details():
     # 判断数据有没有ID 字段，有的话就更新ID，没有就insert
     res = request.json
-    print(res)
+    print("res=>",res)
     if res:
+        if res == []:
+            # 前端完成所有待办的情况下，要将表中所有的状态置为已完成
+            pass
         for todo in res:
             # Tue, 01 Dec 2020 16:44:13 GMT
             GMT_FORMAT =  '%a, %d %b %Y %H:%M:%S GMT'
@@ -111,6 +114,12 @@ def post_todo_details():
                 db.session.add(data)
             else:
                 # 旧待办，要更新，现在是全量更新，以后再优化吧
+                if todo.get("deadline"):
+                    todo["deadline"] = datetime.strptime(todo["deadline"],GMT_FORMAT)
+                    print(type(todo["deadline"]))
+                if todo.get("reminder_time"):
+                    todo["reminder_time"] = datetime.strptime(todo["reminder_time"],GMT_FORMAT)
+                    print(type(todo["reminder_time"]))
                 row = ToDoDetails.query.filter(ToDoDetails.id==todo["id"]).first()
                 print(f"更改的ID是{row.id}")
                 row.name=todo.get("name")
@@ -125,7 +134,7 @@ def post_todo_details():
                 row.reminder_time=todo.get("reminder_time")
         try:
             db.session.commit()
-            return "{code:0}"
+            return {"code":0}
         except Exception as e:
-            return "{code:1,message:" + f"{e}" + "}"
+            return {"code":1,"message":f"{res}不是合法的输入","error":f"{e}"}
     return "{code:0}"

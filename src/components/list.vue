@@ -1,20 +1,21 @@
 <template >
   <section>
+    <div class="clear-float"></div>
     <ul class="todo-list" v-show="todoList.length">
       <li
         class="todo-item"
         v-for="(item, index) in todoList"
         v-bind:key="index + item.name"
       >
-        <span>{{ index + 1 }}.</span>
+        <i class="fa fa-square-o todo-done" aria-hidden="true" @click="removeItem(index)"></i>
+        <i class="fa fa-play-circle-o fa-2x todo-start" aria-hidden="true"></i>
         <p>
-          <span></span>
-          {{ item.name }}<br /><span class="todo-time" v-if="item.deadline"
+          <span>{{ index + 1 }}. {{ item.name }}</span><br>
+          <span class="todo-time" v-if="item.deadline"
             >截止时间: {{ chGMT(item.deadline) }}</span
           >
         </p>
-        <button>开始</button>
-        <button @click="removeItem(index)">完成</button>
+        
       </li>
     </ul>
     <div class="todo-nodata" v-show="!todoList.length">
@@ -24,6 +25,8 @@
 </template>
 
 <script>
+//http://www.fontawesome.com.cn/ 
+import "../assets/font-awesome/css/font-awesome.min.css"
 // 格林威治时间修饰
 Date.prototype.format = function (format) {
   var o = {
@@ -57,26 +60,34 @@ export default {
         let now_date = new Date();
         // mydate.setHours(mydate.getHours() + 8);
         let init_date = mydate.format("yyyy-MM-dd hh:mm:ss");
-        let print_date
-        if (mydate.getFullYear() == now_date.getFullYear()){
+        let print_date;
+        if (mydate.getFullYear() == now_date.getFullYear()) {
           console.log(mydate.getDate() != now_date.getDate());
-          if (mydate.getDate() == now_date.getDate()){
-            print_date = "今天"+" "+ mydate.format("hh:mm:ss");
-          }else if(mydate.getDate() == now_date.getDate()+1){
-            print_date = "明天"+" "+ mydate.format("hh:mm:ss");
-          }else if(mydate.getDate() == now_date.getDate()+2){
-            print_date = "后天"+" "+ mydate.format("hh:mm:ss");
-          }else{
+          if (mydate.getDate() == now_date.getDate()) {
+            print_date = "今天" + " " + mydate.format("hh:mm:ss");
+          } else if (mydate.getDate() == now_date.getDate() + 1) {
+            print_date = "明天" + " " + mydate.format("hh:mm:ss");
+          } else if (mydate.getDate() == now_date.getDate() + 2) {
+            print_date = "后天" + " " + mydate.format("hh:mm:ss");
+          } else {
             print_date = init_date;
           }
         }
-        return print_date
+        return print_date;
       },
     };
   },
   computed: {
     todoList: function () {
-      return this.$store.state.items;
+      // 这里可以筛选items的状态,可以在这里排序
+      let itemsing = []
+      for (let i=0;i<this.$store.state.items.length;i++){
+        if (this.$store.state.items[i].status != "done" && this.$store.state.items[i].status != "drop"){
+          console.log("将展示=>",this.$store.state.items[i]);
+          itemsing.push(this.$store.state.items[i])
+        }
+      }
+      return itemsing;
     },
   },
   methods: {

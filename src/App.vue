@@ -27,6 +27,8 @@ import TodoList from "./components/list";
 import TodoRead from "./components/readJson";
 import TodoSave from "./components/saveTodo";
 import "./themes/defaut-dark/defaut-dark.css";
+
+
 export default {
   name: "App",
   components: {
@@ -48,11 +50,11 @@ export default {
         let endX = e.clientX;
         let moveLen = resize.left + (endX - startX);
         let maxT = box.clientWidth - resize.offsetWidth;
-        if (moveLen < 150) moveLen = 150;
-        if (moveLen > maxT - 150) moveLen = maxT - 150;
+        if (moveLen < 250) moveLen = 250;
+        if (moveLen > maxT - 250) moveLen = maxT - 250;
         resize.style.left = moveLen;
         left.style.width = moveLen + "px";
-        right.style.width = box.clientWidth - moveLen - 25 + "px";
+        right.style.width = box.clientWidth - moveLen - 28 + "px";
       };
       document.onmouseup = function (evt) {
         console.log(evt);
