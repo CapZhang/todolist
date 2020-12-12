@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import and_,or_,not_
 from www.init.init_app import app
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../DB/db/db.sqlite3.db'

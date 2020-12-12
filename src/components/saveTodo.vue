@@ -17,7 +17,9 @@ export default {
                 res=>{
                     console.log("res=>",res);
                 }
-            )
+            ).catch((err)=>{
+              return err  
+            })
         }
     },
 }

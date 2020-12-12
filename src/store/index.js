@@ -26,6 +26,11 @@ export default new Vuex.Store({
       // 这里不能使用concat是因为concat不改变原数组
       console.log("read_items");
       state.items=jsonitems
+    },
+    UPDATE_STATUS(state,update_status){
+      console.log("UPDATE_STATUS=>",state.items[update_status.index]);
+      console.log("data=>",update_status);
+      state.items[update_status.index].status = update_status.status  
     }
   },
   actions: {
@@ -38,6 +43,9 @@ export default new Vuex.Store({
     },
     readItems({ commit }, jsonitems){
       commit("READ_ITEMS", jsonitems);
+    },
+    updateStatus({commit},index,status){
+      commit("UPDATE_STATUS",index,status)
     }
   },
   modules: {},

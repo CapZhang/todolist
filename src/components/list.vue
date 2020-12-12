@@ -7,8 +7,8 @@
         v-for="(item, index) in todoList"
         v-bind:key="index + item.name"
       >
-        <i class="fa fa-square-o todo-done" aria-hidden="true" @click="removeItem(index)"></i>
-        <i class="fa fa-play-circle-o fa-2x todo-start" aria-hidden="true"></i>
+        <i class="fa fa-square-o todo-done" aria-hidden="true" @click="removeItem(index,item.id)" title="完成"></i>
+        <i class="fa fa-play-circle-o fa-2x todo-start" aria-hidden="true" title="开始"></i>
         <p>
           <span>{{ index + 1 }}. {{ item.name }}</span><br>
           <span class="todo-time" v-if="item.deadline"
@@ -80,6 +80,7 @@ export default {
   computed: {
     todoList: function () {
       // 这里可以筛选items的状态,可以在这里排序
+      // 前端展示的列表是排除了done和drop后的，所以前端展示的index和内存中的真正的index不一样
       let itemsing = []
       for (let i=0;i<this.$store.state.items.length;i++){
         if (this.$store.state.items[i].status != "done" && this.$store.state.items[i].status != "drop"){
@@ -91,8 +92,31 @@ export default {
     },
   },
   methods: {
-    removeItem(index) {
-      this.$store.dispatch("removeItem", index);
+    removeItem(index,id) {
+      let update_status = {}
+      update_status.id = id
+      update_status.status = "done"
+      for (let i=0;i<this.$store.state.items.length;i++){
+        if (this.$store.state.items[i].id==id){
+            update_status.index = i
+        }
+      }
+      this.$store.dispatch("updateStatus",update_status);
+
+       this.$https
+            .post("/todo/post",this.$store.state.items[update_status.index])
+            .then(
+                res=>{
+                  if (res.data.code==0){
+                    console.log("更新后端DB=>",res);
+                    this.$store.dispatch("removeItem", index);
+                  }else{
+                    alert("网络错误:"+res.data.message)
+                  }
+                }
+            ).catch((err)=>{
+              return err  
+            })
     },
   },
 };

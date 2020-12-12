@@ -1,5 +1,5 @@
 from www.init.init_app import app
-from www.DB.db_script.CRUD import db,User,ToDoDetails,datetime,insert_ToDoDetails
+from www.DB.db_script.CRUD import db,User,ToDoDetails,datetime,insert_ToDoDetails,and_,or_,not_
 from flask import jsonify,request
 from datetime import datetime
 
@@ -79,12 +79,14 @@ def get_todo_details(status):
 def post_todo_details():
     # 判断数据有没有ID 字段，有的话就更新ID，没有就insert
     res = request.json
+    if not isinstance(res,list):
+        temp = []
+        temp.append(res)
+        res = temp
     print("res=>",res)
     if res:
-        if res == []:
-            # 前端完成所有待办的情况下，要将表中所有的状态置为已完成
-            pass
         for todo in res:
+            print("rodo=>",todo)
             # Tue, 01 Dec 2020 16:44:13 GMT
             GMT_FORMAT =  '%a, %d %b %Y %H:%M:%S GMT'
             dayjs_FORMAT = '%Y-%m-%d %H:%M:%S'            
