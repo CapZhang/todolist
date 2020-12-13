@@ -24,6 +24,7 @@ class ToDoDetails(db.Model):
         3. stop
         4. done
         5. drop
+        6. doing
     @level:
         1. IN Important but urgent,重要紧急
         2. IU Important but non-urgent,重要不紧急

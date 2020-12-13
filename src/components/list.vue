@@ -1,5 +1,5 @@
 <template >
-  <section>
+  <section class="todo-list">
     <div class="clear-float"></div>
     <ul class="todo-list" v-show="todoList.length">
       <li
@@ -7,26 +7,44 @@
         v-for="(item, index) in todoList"
         v-bind:key="index + item.name"
       >
-        <i class="fa fa-square-o todo-done" aria-hidden="true" @click="removeItem(index,item.id)" title="完成"></i>
-        <i class="fa fa-play-circle-o fa-2x todo-start" aria-hidden="true" title="开始"></i>
+        <i
+          class="fa fa-square-o todo-done"
+          aria-hidden="true"
+          @click="removeItem(index, item.id, 'done')"
+          title="完成"
+        ></i>
+        <i
+          class="fa fa-play-circle-o fa-2x todo-start"
+          aria-hidden="true"
+          title="开始"
+        ></i>
         <p>
-          <span>{{ index + 1 }}. {{ item.name }}</span><br>
+          <span>{{ index + 1 }}. {{ item.name }}</span
+          ><br />
           <span class="todo-time" v-if="item.deadline"
             >截止时间: {{ chGMT(item.deadline) }}</span
           >
         </p>
-        
       </li>
     </ul>
     <div class="todo-nodata" v-show="!todoList.length">
       恭喜你完成所有内容，请继续添加！！
     </div>
+    <button @click="toggleModal">打开Modal对话框</button>
+    <todoDomeModalBox
+      v-show="showModal"
+      v-on:closeme="closeme"
+      v-bind:doneList="todoDoneList"
+      v-bind:chGMT="chGMT"
+      v-bind:removeItem="removeItem"
+    />
   </section>
 </template>
 
 <script>
-//http://www.fontawesome.com.cn/ 
-import "../assets/font-awesome/css/font-awesome.min.css"
+//http://www.fontawesome.com.cn/
+import "../assets/font-awesome/css/font-awesome.min.css";
+import todoDomeModalBox from "./todoDoneModalBox";
 // 格林威治时间修饰
 Date.prototype.format = function (format) {
   var o = {
@@ -75,48 +93,75 @@ export default {
         }
         return print_date;
       },
+      showModal: false,
     };
+  },
+  components: {
+    todoDomeModalBox,
   },
   computed: {
     todoList: function () {
+      // 未完成待办
       // 这里可以筛选items的状态,可以在这里排序
       // 前端展示的列表是排除了done和drop后的，所以前端展示的index和内存中的真正的index不一样
-      let itemsing = []
-      for (let i=0;i<this.$store.state.items.length;i++){
-        if (this.$store.state.items[i].status != "done" && this.$store.state.items[i].status != "drop"){
-          console.log("将展示=>",this.$store.state.items[i]);
-          itemsing.push(this.$store.state.items[i])
+      let itemsing = [];
+      for (let i = 0; i < this.$store.state.items.length; i++) {
+        if (
+          this.$store.state.items[i].status != "done" &&
+          this.$store.state.items[i].status != "drop"
+        ) {
+          console.log("将展示=>", this.$store.state.items[i]);
+          itemsing.push(this.$store.state.items[i]);
+        }
+      }
+      return itemsing;
+      // return this.$store.state.items
+    },
+    todoDoneList: function () {
+      // 已完成待办
+      let itemsing = [];
+      for (let i = 0; i < this.$store.state.items.length; i++) {
+        if (
+          this.$store.state.items[i].status == "done" ||
+          this.$store.state.items[i].status == "drop"
+        ) {
+          console.log("将展示=>", this.$store.state.items[i]);
+          itemsing.push(this.$store.state.items[i]);
         }
       }
       return itemsing;
     },
   },
   methods: {
-    removeItem(index,id) {
-      let update_status = {}
-      update_status.id = id
-      update_status.status = "done"
-      for (let i=0;i<this.$store.state.items.length;i++){
-        if (this.$store.state.items[i].id==id){
-            update_status.index = i
+    toggleModal: function () {
+      this.showModal = !this.showModal;
+    },
+    closeme: function () {
+      this.showModal = !this.showModal;
+    },
+    removeItem(index, id, status) {
+      let update_status = {};
+      update_status.id = id;
+      update_status.status = status;
+      for (let i = 0; i < this.$store.state.items.length; i++) {
+        if (this.$store.state.items[i].id == id) {
+          update_status.index = i;
         }
       }
-      this.$store.dispatch("updateStatus",update_status);
-
-       this.$https
-            .post("/todo/post",this.$store.state.items[update_status.index])
-            .then(
-                res=>{
-                  if (res.data.code==0){
-                    console.log("更新后端DB=>",res);
-                    this.$store.dispatch("removeItem", index);
-                  }else{
-                    alert("网络错误:"+res.data.message)
-                  }
-                }
-            ).catch((err)=>{
-              return err  
-            })
+      this.$store.dispatch("updateStatus", update_status);
+      this.$https
+        .post("/todo/post", this.$store.state.items[update_status.index])
+        .then((res) => {
+          if (res.data.code == 0) {
+            console.log("更新后端DB=>", res);
+            // this.$store.dispatch("removeItem", index);
+          } else {
+            alert("网络错误:" + res.data.message);
+          }
+        })
+        .catch((err) => {
+          return err;
+        });
     },
   },
 };
