@@ -10,21 +10,21 @@
         <i
           class="fa fa-square-o todo-done"
           aria-hidden="true"
-          @click="updateItem(index, item.id, 'done')"
+          @click="updateItem(item, 'done')"
           title="完成"
         ></i>
         <i
           v-if="item.status!='doing'"
           class="fa fa-play-circle-o fa-2x todo-start"
           aria-hidden="true"
-          @click="updateItem(index, item.id, 'doing')"
+          @click="updateItem(item, 'doing')"
           title="开始"
         ></i>
         <i
           v-if="item.status=='doing'"
           class="fa fa-spinner fa-pulse fa-2x todo-start"
           aria-hidden="true"
-          @click="updateItem(index, item.id, 'stop')"
+          @click="updateItem(item, 'stop')"
           title="暂停"
         ></i>
         <p>
@@ -123,16 +123,21 @@ export default {
     closeme: function () {
       this.showModal = !this.showModal;
     },
-    updateItem(index, id, status) {
+    updateItem(item, status) {
       let update_status = {};
-      update_status.id = id;
+      update_status.id = item.id;
       update_status.status = status;
       update_status.time = this.$moment(new Date()).format("X");
       for (let i = 0; i < this.$store.state.items.length; i++) {
-        if (this.$store.state.items[i].id == id) {
+        if (item.id) {
+          if (this.$store.state.items[i].id == item.id){
+            update_status.index = i;
+          }
+        }else if(this.$store.state.items[i].name == item.name){
           update_status.index = i;
         }
       }
+      console.log("update_status.index=>",update_status.index);
       let back_data = this.$store.state.items[update_status.index]
       this.$store.dispatch("updateItems", update_status);
       this.$https

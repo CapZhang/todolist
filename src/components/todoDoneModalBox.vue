@@ -15,7 +15,7 @@
               <i
                 class="fa fa-check-square-o todo-done"
                 aria-hidden="true"
-                @click="updateItem(index, item.id, 'start')"
+                @click="updateItem(item, 'start')"
                 title="移到未完成"
               ></i>
               <p>
