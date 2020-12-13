@@ -110,10 +110,10 @@ def post_todo_details():
                     str_end_time = todo.get("end_time")
             else:
                 str_end_time = None
-
-            if todo.get("id") != None:
+            row = ToDoDetails.query.filter(ToDoDetails.name==todo["name"]).first()
+            if row != None:
                 # 旧待办，要更新，现在是全量更新，以后再优化吧
-                row = ToDoDetails.query.filter(ToDoDetails.id==todo["id"]).first()
+                # row = ToDoDetails.query.filter(ToDoDetails.id==todo["id"]).first()
                 print(f"更改的ID是{row.id}")
                 todo_id = todo.get("id")
                 name=todo.get("name")
@@ -169,12 +169,7 @@ def post_todo_details():
                     )
                     db.session.add(event)
             # 新待办
-            elif todo.get("id") == None:
-                row = ToDoDetails.query.filter(ToDoDetails.name==todo["name"]).first()
-                if row != None and todo.get('status',"create") == row.status:
-                    print(f"status=>{status}\nrow_status:{row.status}")
-                    double_name = {"code":2,"message":f"《{todo['name']}》已存在"}
-                    continue
+            elif row == None:
                 print(f"插入的name是{todo['name']}")
                 name=todo.get("name")
                 status=todo.get("status","create")

@@ -13,14 +13,38 @@
       <div>
         <ul class="todo-info-border">
           <li style="float: right">
-            <input type="radio" name="level" id="IN" value="IN" v-model="level"/>
+            <input
+              type="radio"
+              name="level"
+              id="IN"
+              value="IN"
+              v-model="level"
+            />
             <label for="IN" class="level-info">重要紧急</label>
-            <input type="radio" name="level" id="UU" value="UU" v-model="level" />
+            <input
+              type="radio"
+              name="level"
+              id="UU"
+              value="UU"
+              v-model="level"
+            />
             <label for="UU" class="level-info">不重要紧急</label>
             <br />
-            <input type="radio" name="level" id="IU" value="IU" v-model="level" />
+            <input
+              type="radio"
+              name="level"
+              id="IU"
+              value="IU"
+              v-model="level"
+            />
             <label for="IU" class="level-info">重要不紧急</label>
-            <input type="radio" name="level" id="UN" value="UN" v-model="level" />
+            <input
+              type="radio"
+              name="level"
+              id="UN"
+              value="UN"
+              v-model="level"
+            />
             <label for="UN" class="level-info">不重要不紧急</label>
           </li>
           <li>
@@ -75,7 +99,7 @@ export default {
   },
   data() {
     return {
-      inputArry:"",
+      inputArry: "",
       level: "IN",
       text: "",
       input_deadline: null,
@@ -89,12 +113,13 @@ export default {
   methods: {
     inputText(e) {
       if (e.target.value != "") {
+        console.log("add之前的items=>", this.$store.state.items);
         this.inputArry = [{ name: e.target.value }];
       }
     },
     addItem() {
       if (this.inputArry != "") {
-        console.log("添加待办=>",this.inputArry);
+        console.log("添加待办=>", this.inputArry);
         if (this.input_deadline) {
           this.inputArry[0].deadline = this.chDate(this.input_deadline);
           console.log(this.inputArry[0].deadline);
@@ -107,6 +132,16 @@ export default {
           this.inputArry[0].level = this.level;
           console.log(this.inputArry[0].level);
         }
+        for (let i = 0; i < this.$store.state.items.length; i++) {
+          console.log("name=>", this.$store.state.items[i].name);
+          if (this.$store.state.items[i].name == this.inputArry[0].name) {
+            this.inputArry = "";
+            this.text = "";
+            this.input_deadline = "";
+            this.input_reminder = "";
+            return alert("已存在");
+          }
+        }
         this.$https
           .post("/todo/post", this.inputArry)
           .then((res) => {
@@ -114,7 +149,6 @@ export default {
               // let updateStatus = {}
               // this.$store.dispatch("updateStatus", updateStatus);
               console.log("input新增待办=>", res);
-              
             } else {
               alert("网络错误:" + res.data.message);
             }

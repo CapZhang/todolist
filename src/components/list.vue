@@ -7,6 +7,7 @@
         v-for="(item, index) in todoList"
         v-bind:key="index + item.name"
       >
+      {{ "========="+ item.status }}
         <i
           class="fa fa-square-o todo-done"
           aria-hidden="true"
@@ -21,7 +22,7 @@
           title="开始"
         ></i>
         <i
-          v-if="item.status=='doing'"
+          v-else-if="item.status=='doing'"
           class="fa fa-spinner fa-pulse fa-2x todo-start"
           aria-hidden="true"
           @click="updateItem(item, 'stop')"
@@ -130,6 +131,7 @@ export default {
       update_status.time = this.$moment(new Date()).format("X");
       for (let i = 0; i < this.$store.state.items.length; i++) {
         if (item.id) {
+          console.log("item.id=>",item.id);
           if (this.$store.state.items[i].id == item.id){
             update_status.index = i;
           }
@@ -137,16 +139,17 @@ export default {
           update_status.index = i;
         }
       }
-      console.log("update_status.index=>",update_status.index);
       let back_data = this.$store.state.items[update_status.index]
       this.$store.dispatch("updateItems", update_status);
       this.$https
         .post("/todo/post", this.$store.state.items[update_status.index])
         .then((res) => {
           if (res.data.code == 0) {
+            
             console.log("更新后端DB=>", res);
           } else {
-            this.$store.state.items[update_status.index] = back_data
+            // this.$store.state.items[update_status.index] = back_data
+            console.log(back_data);
             alert("网络错误:" + res.data.message);
           }
         })

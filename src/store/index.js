@@ -29,10 +29,16 @@ export default new Vuex.Store({
     },
     UPDATE_ITEMS(state,update_status){
       if (update_status.status=="done"){
-        state.items[update_status.index].status = update_status.status;
+        for(let i=0;i<state.items.length;i++){
+          if(i == update_status.index){
+            state.items.splice(update_status.index,1);
+            break;
+          }
+        }
       }else if(update_status.status=="doing"){
         state.items[update_status.index].status = update_status.status;
         let start_list = state.items[update_status.index].start_time
+        console.log("state.items[update_status.index]=>",state.items[update_status.index]);
         if (start_list){
           state.items[update_status.index].start_time.push(update_status.time)
         }else{
@@ -61,7 +67,7 @@ export default new Vuex.Store({
       commit("READ_ITEMS", jsonitems);
     },
     updateItems({commit},update_status){
-      commit("UPDATE_ITEMS",update_status)
+      commit("UPDATE_ITEMS",update_status);
     }
   },
   modules: {},
