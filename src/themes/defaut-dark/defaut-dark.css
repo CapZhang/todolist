@@ -110,6 +110,16 @@ html {
   font-weight: bold;
 }
 
+.todo-done-button {
+  margin-top: 10px;
+  float:right;
+  height: 30px;
+  width: 100px;
+  font-weight: bold;
+  border-radius: 6px;
+  
+}
+
 .todo-todo > .todo-input .vdatetime-input {
   float: right;
   cursor: pointer;
@@ -187,6 +197,7 @@ html {
   text-align: center;
   color: rgb(16, 143, 54);
   margin-right: 8px;
+  cursor: pointer;
 }
 .todo-time {
   float: right;

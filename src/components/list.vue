@@ -10,13 +10,22 @@
         <i
           class="fa fa-square-o todo-done"
           aria-hidden="true"
-          @click="removeItem(index, item.id, 'done')"
+          @click="updateItem(index, item.id, 'done')"
           title="完成"
         ></i>
         <i
+          v-if="item.status!='doing'"
           class="fa fa-play-circle-o fa-2x todo-start"
           aria-hidden="true"
+          @click="updateItem(index, item.id, 'doing')"
           title="开始"
+        ></i>
+        <i
+          v-if="item.status=='doing'"
+          class="fa fa-spinner fa-pulse fa-2x todo-start"
+          aria-hidden="true"
+          @click="updateItem(index, item.id, 'stop')"
+          title="暂停"
         ></i>
         <p>
           <span>{{ index + 1 }}. {{ item.name }}</span
@@ -30,13 +39,13 @@
     <div class="todo-nodata" v-show="!todoList.length">
       恭喜你完成所有内容，请继续添加！！
     </div>
-    <button @click="toggleModal">打开Modal对话框</button>
+    <button @click="toggleModal" class="todo-done-button">查看已完成</button>
     <todoDomeModalBox
       v-show="showModal"
       v-on:closeme="closeme"
       v-bind:doneList="todoDoneList"
       v-bind:chGMT="chGMT"
-      v-bind:removeItem="removeItem"
+      v-bind:updateItem="updateItem"
     />
   </section>
 </template>
@@ -114,23 +123,25 @@ export default {
     closeme: function () {
       this.showModal = !this.showModal;
     },
-    removeItem(index, id, status) {
+    updateItem(index, id, status) {
       let update_status = {};
       update_status.id = id;
       update_status.status = status;
+      update_status.time = this.$moment(new Date()).format("X");
       for (let i = 0; i < this.$store.state.items.length; i++) {
         if (this.$store.state.items[i].id == id) {
           update_status.index = i;
         }
       }
-      this.$store.dispatch("updateStatus", update_status);
+      let back_data = this.$store.state.items[update_status.index]
+      this.$store.dispatch("updateItems", update_status);
       this.$https
         .post("/todo/post", this.$store.state.items[update_status.index])
         .then((res) => {
           if (res.data.code == 0) {
             console.log("更新后端DB=>", res);
-            // this.$store.dispatch("removeItem", index);
           } else {
+            this.$store.state.items[update_status.index] = back_data
             alert("网络错误:" + res.data.message);
           }
         })

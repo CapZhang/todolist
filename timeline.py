@@ -23,13 +23,15 @@ def get_todo_details_all():
     if res:
         json_data = []
         for res_temp in res:
-            # datetime_create_time = res_temp.create_time
-            # if res_temp.create_time:
-            #     res_temp.create_time=res_temp.create_time.strftime("%Y-%m-%d %X")
-            # if res_temp.deadline: # 截止时间
-            #     res_temp.deadline=res_temp.deadline.strftime("%Y-%m-%d %X")
-            # if res_temp.reminder_time:
-            #     res_temp.reminder_time=res_temp.reminder_time.strftime("%Y-%m-%d %X")
+            if res_temp.start_time:
+                start_time = res_temp.start_time.split(",")
+            else:
+                start_time = None
+
+            if res_temp.end_time:
+                end_time = res_temp.end_time.split(",")
+            else:
+                end_time = None
             data = {
                 "id": res_temp.id,
                 "name": res_temp.name,
@@ -37,8 +39,8 @@ def get_todo_details_all():
                 "status": res_temp.status,
                 "level": res_temp.level,
                 "sub_todo_id": res_temp.sub_todo_id,
-                "start_time": res_temp.start_time,
-                "end_time": res_temp.end_time,
+                "start_time": start_time,
+                "end_time": end_time,
                 "use_time": res_temp.use_time,
                 "progress_bar": res_temp.progress_bar,
                 "deadline": res_temp.deadline,
@@ -75,7 +77,6 @@ def get_todo_details(status):
         return "没有这个状态"
 
 
-
 @app.route("/api/todo/post",methods=["POST"],endpoint="post_todo_details")
 def post_todo_details():
     # 判断数据有没有ID 字段，有的话就更新ID，没有就insert
@@ -91,6 +92,24 @@ def post_todo_details():
             event_conn = []
             event_type = []
             print("rodo=>",todo)
+
+            # 将前端传过来的列表转化成逗号分隔的字符串
+            if todo.get("start_time"):
+                if isinstance(todo.get("start_time"),list):
+                    str_start_time = ",".join(todo.get("start_time"))
+                if isinstance(todo.get("start_time"),str):
+                    str_start_time = todo.get("start_time")
+            else:
+                str_start_time = None
+
+            if todo.get("end_time"):
+                if isinstance(todo.get("end_time"),list):
+                    str_end_time = ",".join(todo.get("end_time"))
+                if isinstance(todo.get("end_time"),str):
+                    str_end_time = todo.get("end_time")
+            else:
+                str_end_time = None
+
             if todo.get("id") == None:
                 print(f"插入的name是{todo['name']}")
                 name=todo.get("name")
@@ -98,8 +117,8 @@ def post_todo_details():
                 create_time=time.time()
                 level=todo.get("level")
                 sub_todo_id=todo.get("sub_todo_id")
-                start_time=todo.get("start_time")
-                end_time=todo.get("end_time")
+                start_time=str_start_time
+                end_time=str_end_time
                 use_time=todo.get("use_time")
                 progress_bar=todo.get("progress_bar")
                 deadline=todo.get("deadline")
@@ -135,8 +154,8 @@ def post_todo_details():
                 status=todo.get("status")
                 level=todo.get("level")
                 sub_todo_id=todo.get("sub_todo_id")
-                start_time=todo.get("start_time")
-                end_time=todo.get("end_time")
+                start_time=str_start_time
+                end_time=str_end_time
                 use_time=todo.get("use_time")
                 progress_bar=todo.get("progress_bar")
                 deadline=todo.get("deadline")
@@ -155,8 +174,12 @@ def post_todo_details():
                     event_conn.append(f"子任务更新：\n\t{row.sub_todo_id}  ==>  {sub_todo_id}")
                     row.sub_todo_id=sub_todo_id
                 if row.start_time!=start_time:
+                    print(f"开始时间变更前：{row.start_time}\n开始时间变更后：{start_time}")
+                    event_conn.append(f"开始任务：\n\t{row.name}")
                     row.start_time=start_time
                 if row.end_time!=end_time:
+                    print(f"结束时间变更前：{row.end_time}\n结束时间变更后：{end_time}")
+                    event_conn.append(f"暂停任务：\n\t{row.name}")
                     row.end_time=end_time
                 if row.use_time!=use_time:
                     row.use_time=use_time
@@ -174,7 +197,7 @@ def post_todo_details():
                     event = EventTimeLine(
                         event_todo_id=todo_id,
                         event_type="update_todo",
-                        event_time=datetime.now(),
+                        event_time=time.time(),
                         event_valid="True",
                         event_conn=f"更新内容：\n{ev_str}"
                     )

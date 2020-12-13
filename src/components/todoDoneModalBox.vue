@@ -15,7 +15,7 @@
               <i
                 class="fa fa-check-square-o todo-done"
                 aria-hidden="true"
-                @click="removeItem(index, item.id, 'start')"
+                @click="updateItem(index, item.id, 'start')"
                 title="移到未完成"
               ></i>
               <p>
@@ -54,7 +54,7 @@ export default {
     chGMT: {
       type: Function,
     },
-    removeItem: {
+    updateItem: {
       type: Function,
     },
   },

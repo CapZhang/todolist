@@ -27,11 +27,25 @@ export default new Vuex.Store({
       console.log("read_items");
       state.items=jsonitems
     },
-    UPDATE_STATUS(state,update_status){
-      console.log("UPDATE_STATUS=>",state.items[update_status.index]);
-      console.log("data=>",update_status);
-      if (update_status.status){
-        state.items[update_status.index].status = update_status.status
+    UPDATE_ITEMS(state,update_status){
+      if (update_status.status=="done"){
+        state.items[update_status.index].status = update_status.status;
+      }else if(update_status.status=="doing"){
+        state.items[update_status.index].status = update_status.status;
+        let start_list = state.items[update_status.index].start_time
+        if (start_list){
+          state.items[update_status.index].start_time.push(update_status.time)
+        }else{
+          state.items[update_status.index].start_time = new Array(update_status.time)
+        }
+      }else if(update_status.status=="stop"){
+        state.items[update_status.index].status = update_status.status;
+        let stop_list = state.items[update_status.index].end_time
+        if (stop_list){
+          state.items[update_status.index].end_time.push(update_status.time)
+        }else{
+          state.items[update_status.index].end_time = new Array(update_status.time)
+        }
       }
     }
   },
@@ -46,8 +60,8 @@ export default new Vuex.Store({
     readItems({ commit }, jsonitems){
       commit("READ_ITEMS", jsonitems);
     },
-    updateStatus({commit},update_status){
-      commit("UPDATE_STATUS",update_status)
+    updateItems({commit},update_status){
+      commit("UPDATE_ITEMS",update_status)
     }
   },
   modules: {},
