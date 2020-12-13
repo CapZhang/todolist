@@ -11,17 +11,53 @@
       />
       <button v-on:click="addItem" class="todo-input-add-button">添加</button>
       <div>
-        
-        <button v-on:click="del_time" class="clear-info">×</button>
-        <datetime
-          type="datetime"
-          v-model="datetime"
-          format="yyyy-MM-dd HH:mm:ss"
-          hidden-name="123123"
-          auto
-        ></datetime>
-        <span class="todo-info">截止时间： </span>
+        <ul class="todo-info-border">
+          <li style="float: right">
+            <input type="radio" name="level" id="IN" value="IN" v-model="level"/>
+            <label for="IN" class="level-info">重要紧急</label>
+            <input type="radio" name="level" id="UU" value="UU" v-model="level" />
+            <label for="UU" class="level-info">不重要紧急</label>
+            <br />
+            <input type="radio" name="level" id="IU" value="IU" v-model="level" />
+            <label for="IU" class="level-info">重要不紧急</label>
+            <input type="radio" name="level" id="UN" value="UN" v-model="level" />
+            <label for="UN" class="level-info">不重要不紧急</label>
+          </li>
+          <li>
+            <button
+              v-on:click="del_time('deadline')"
+              class="clear-info clear-float"
+            >
+              ×
+            </button>
+            <datetime
+              type="datetime"
+              v-model="input_deadline"
+              format="yyyy-MM-dd HH:mm:ss"
+              hidden-name="123123"
+              auto
+            ></datetime>
+            <span class="todo-info">截止时间： </span>
+          </li>
+          <li>
+            <button
+              v-on:click="del_time('reminder')"
+              class="clear-info clear-float"
+            >
+              ×
+            </button>
+            <datetime
+              type="datetime"
+              v-model="input_reminder"
+              format="yyyy-MM-dd HH:mm:ss"
+              hidden-name="123123"
+              auto
+            ></datetime>
+            <span class="todo-info">提醒时间： </span>
+          </li>
+        </ul>
       </div>
+      <br />
       <!-- <span>展示：{{ chDate(datetime) }}</span> -->
     </div>
   </section>
@@ -39,8 +75,11 @@ export default {
   },
   data() {
     return {
+      inputArry:"",
+      level: "IN",
       text: "",
-      datetime: null,
+      input_deadline: null,
+      input_reminder: null,
       dayjs: dayjs,
       chDate(time) {
         return this.dayjs(time).format("YYYY-MM-DD HH:mm:ss");
@@ -55,24 +94,60 @@ export default {
     },
     addItem() {
       if (this.inputArry != "") {
-        if (this.datetime) {
-          this.inputArry[0].deadline = this.chDate(this.datetime);
+        console.log("添加待办=>",this.inputArry);
+        if (this.input_deadline) {
+          this.inputArry[0].deadline = this.chDate(this.input_deadline);
           console.log(this.inputArry[0].deadline);
         }
+        if (this.input_reminder != "") {
+          this.inputArry[0].reminder_time = this.chDate(this.input_reminder);
+          console.log(this.inputArry[0].reminder_time);
+        }
+        if (this.level) {
+          this.inputArry[0].level = this.level;
+          console.log(this.inputArry[0].level);
+        }
+        this.$https
+          .post("/todo/post", this.inputArry)
+          .then((res) => {
+            if (res.data.code == 0) {
+              // let updateStatus = {}
+              // this.$store.dispatch("updateStatus", updateStatus);
+              console.log("input新增待办=>", res);
+              
+            } else {
+              alert("网络错误:" + res.data.message);
+            }
+          })
+          .catch((err) => {
+            return err;
+          });
         this.$store.dispatch("addItem", this.inputArry);
         this.inputArry = "";
         this.text = "";
-        this.datetime = "";
+        this.input_deadline = "";
+        this.input_reminder = "";
         console.log(this.$store.items);
       }
     },
-    del_time() {
-      console.log("点击前=>", this.datetime);
-      this.datetime = "";
-      if (this.inputArry) {
-        this.inputArry[0].deadline = "";
+    del_time(type) {
+      if (type == "deadline") {
+        console.log("点击前=>", this.input_deadline);
+        this.input_deadline = "";
+        if (this.inputArry) {
+          this.inputArry[0].deadline = "";
+        }
+        console.log("点击后=>", this.datetime);
+      } else if (type == "reminder") {
+        console.log("点击前=>", this.input_reminder);
+        this.input_reminder = "";
+        if (this.inputArry) {
+          this.inputArry[0].reminder_time = "";
+        }
+        console.log("点击后=>", this.datetime);
+      } else {
+        this.inputArry = "";
       }
-      console.log("点击后=>", this.datetime);
     },
   },
 };

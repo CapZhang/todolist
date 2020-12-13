@@ -30,7 +30,9 @@ export default new Vuex.Store({
     UPDATE_STATUS(state,update_status){
       console.log("UPDATE_STATUS=>",state.items[update_status.index]);
       console.log("data=>",update_status);
-      state.items[update_status.index].status = update_status.status  
+      if (update_status.status){
+        state.items[update_status.index].status = update_status.status
+      }
     }
   },
   actions: {
@@ -44,8 +46,8 @@ export default new Vuex.Store({
     readItems({ commit }, jsonitems){
       commit("READ_ITEMS", jsonitems);
     },
-    updateStatus({commit},index,status){
-      commit("UPDATE_STATUS",index,status)
+    updateStatus({commit},update_status){
+      commit("UPDATE_STATUS",update_status)
     }
   },
   modules: {},

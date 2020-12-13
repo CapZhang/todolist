@@ -45,50 +45,25 @@
 //http://www.fontawesome.com.cn/
 import "../assets/font-awesome/css/font-awesome.min.css";
 import todoDomeModalBox from "./todoDoneModalBox";
-// 格林威治时间修饰
-Date.prototype.format = function (format) {
-  var o = {
-    "M+": this.getMonth() + 1, //month
-    "d+": this.getDate(), //day
-    "h+": this.getHours(), //hour
-    "m+": this.getMinutes(), //minute
-    "s+": this.getSeconds(), //second
-    "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
-    S: this.getMilliseconds(), //millisecond
-  };
-  if (/(y+)/.test(format))
-    format = format.replace(
-      RegExp.$1,
-      (this.getFullYear() + "").substr(4 - RegExp.$1.length)
-    );
-  for (var k in o)
-    if (new RegExp("(" + k + ")").test(format))
-      format = format.replace(
-        RegExp.$1,
-        RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length)
-      );
-  return format;
-};
 
 export default {
   data() {
     return {
       chGMT(gmtDate) {
-        let mydate = new Date(gmtDate);
-        let now_date = new Date();
-        // mydate.setHours(mydate.getHours() + 8);
-        let init_date = mydate.format("yyyy-MM-dd hh:mm:ss");
+        console.log("转换时间前=>",gmtDate);
+        let mydate = this.$moment(gmtDate)
+        console.log("mydate=>",mydate.hour());
+        let now_date = this.$moment(new Date());
         let print_date;
-        if (mydate.getFullYear() == now_date.getFullYear()) {
-          console.log(mydate.getDate() != now_date.getDate());
-          if (mydate.getDate() == now_date.getDate()) {
+        if (mydate.year() == now_date.year()) {
+          if (mydate.date() == now_date.date()) {
             print_date = "今天" + " " + mydate.format("hh:mm:ss");
-          } else if (mydate.getDate() == now_date.getDate() + 1) {
+          } else if (mydate.date() == now_date.date() + 1) {
             print_date = "明天" + " " + mydate.format("hh:mm:ss");
-          } else if (mydate.getDate() == now_date.getDate() + 2) {
+          } else if (mydate.date() == now_date.date() + 2) {
             print_date = "后天" + " " + mydate.format("hh:mm:ss");
           } else {
-            print_date = init_date;
+            print_date = mydate.format("YYYY-MM-DD HH:mm:ss")
           }
         }
         return print_date;

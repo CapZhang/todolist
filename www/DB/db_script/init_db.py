@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_,or_,not_
 from www.init.init_app import app
+import time,datetime
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../DB/db/db.sqlite3.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -19,6 +20,7 @@ class User(db.Model):
 class ToDoDetails(db.Model):
     '''
     @status:
+        0. create
         1. index
         2. start
         3. stop
@@ -35,7 +37,7 @@ class ToDoDetails(db.Model):
     # 待办事项名称，不可为空
     name = db.Column(db.String, unique=False, nullable=False)
     # 待办事项创建时间，不可为空
-    create_time = db.Column(db.DateTime, unique=False, nullable=False)
+    create_time = db.Column(db.String, unique=False, nullable=False)
     # 待办事项状态，可为空
     status = db.Column(db.String, unique=False, nullable=True)
     # 优先级，可为空
@@ -46,9 +48,9 @@ class ToDoDetails(db.Model):
     start_time = db.Column(db.String, unique=False, nullable=True)
     end_time = db.Column(db.String, unique=False, nullable=True)
     # 截止时间
-    deadline = db.Column(db.DateTime, unique=False, nullable=True)
+    deadline = db.Column(db.String, unique=False, nullable=True)
     # 提醒时间
-    reminder_time = db.Column(db.DateTime, unique=False, nullable=True)
+    reminder_time = db.Column(db.String, unique=False, nullable=True)
     #  完成任务时长
     use_time = db.Column(db.String, unique=False, nullable=True)
     # 任务进度
@@ -57,15 +59,23 @@ class ToDoDetails(db.Model):
 
 # 发生的事件的时间线
 class EventTimeLine(db.Model):
+    '''
+    @enevt_type:
+    1. create_todo
+    2. update_todo
+    @event_valid:
+    1. "True"
+    2. "False"
+    '''
     id = db.Column(db.Integer, primary_key=True)
-    # 时间发生的todo的ID
+    # 事件发生的todo的ID
     event_todo_id = db.Column(db.Integer,nullable=True)
     # 事件类型
     event_type = db.Column(db.String, unique=False, nullable=False)
     # 事件备注
     event_conn = db.Column(db.String, unique=False, nullable=True)
     # 事件发生的时间
-    event_time = db.Column(db.DateTime, unique=False, nullable=False)
+    event_time = db.Column(db.String, unique=False, nullable=False)
     # 事件是否参与统计
     event_valid = db.Column(db.String, unique=False, nullable=False)
 
