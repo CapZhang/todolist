@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="myscrollbar">
     <div class="sidebar">
       <button>首页</button>
       <button>待办事项</button>
@@ -50,8 +50,8 @@ export default {
         let endX = e.clientX;
         let moveLen = resize.left + (endX - startX);
         let maxT = box.clientWidth - resize.offsetWidth;
-        if (moveLen < 250) moveLen = 250;
-        if (moveLen > maxT - 250) moveLen = maxT - 250;
+        if (moveLen < 270) moveLen = 270;
+        if (moveLen > maxT - 270) moveLen = maxT - 270;
         resize.style.left = moveLen;
         left.style.width = moveLen + "px";
         right.style.width = box.clientWidth - moveLen - 28 + "px";

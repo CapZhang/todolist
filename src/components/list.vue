@@ -1,7 +1,7 @@
 <template >
-  <section class="todo-list">
+  <section>
     <div class="clear-float"></div>
-    <ul class="todo-list" v-show="todoList.length">
+    <ul class="todo-list myscrollbar" v-show="todoList.length">
       <li
         class="todo-item"
         v-for="(item, index) in todoList"

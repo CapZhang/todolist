@@ -6,7 +6,7 @@
           <h3>已完成的待办</h3>
         </div>
         <div class="modal-body">
-          <ul class="todo-done-list" v-show="doneList.length">
+          <ul class="todo-done-list myscrollbar" v-show="doneList.length">
             <li
               class="todo-item"
               v-for="(item, index) in doneList"
@@ -18,16 +18,11 @@
                 @click="removeItem(index, item.id, 'start')"
                 title="移到未完成"
               ></i>
-              <i
-                class="fa fa-play-circle-o fa-2x todo-start"
-                aria-hidden="true"
-                title="开始"
-              ></i>
               <p>
                 <span>{{ index + 1 }}. {{ item.name }}</span
                 ><br />
                 <span class="todo-time" v-if="item.deadline"
-                  >截止时间: {{ chGMT(item.deadline) }}</span
+                  >完成时间: {{ chGMT(item.deadline) }}</span
                 >
               </p>
             </li>
