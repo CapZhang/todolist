@@ -34,6 +34,8 @@ class ToDoDetails(db.Model):
         4. UU Unimportant and urgent,不重要紧急
     '''
     id = db.Column(db.Integer, primary_key=True)
+    # UUID
+    uuid = db.Column(db.String, unique=False, nullable=False)
     # 待办事项名称，不可为空
     name = db.Column(db.String, unique=False, nullable=False)
     # 待办事项创建时间，不可为空

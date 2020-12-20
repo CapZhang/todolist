@@ -132,23 +132,36 @@ export default {
           this.inputArry[0].level = this.level;
           console.log(this.inputArry[0].level);
         }
-        for (let i = 0; i < this.$store.state.items.length; i++) {
-          console.log("name=>", this.$store.state.items[i].name);
-          if (this.$store.state.items[i].name == this.inputArry[0].name) {
-            this.inputArry = "";
-            this.text = "";
-            this.input_deadline = "";
-            this.input_reminder = "";
-            return alert("已存在");
-          }
-        }
+        this.inputArry[0].uuid = this.$uuid(16, 16);
+        this.inputArry[0].status = "create";
+        console.log("uuid生成了=>", this.inputArry[0].uuid);
+        this.inputArry[0].type = "create";
         this.$https
           .post("/todo/post", this.inputArry)
           .then((res) => {
             if (res.data.code == 0) {
+              this.$https
+                .get("/todo")
+                .then((res) => {
+                  this.readStatusDoing = false;
+                  if (res.data.code == 0) {
+                    console.log(res.data);
+                  } else {
+                    this.$store.dispatch("readItems", res.data);
+                  }
+                })
+                .catch((err) => {
+                  return err;
+                });
               // let updateStatus = {}
               // this.$store.dispatch("updateStatus", updateStatus);
-              console.log("input新增待办=>", res);
+              // console.log("input新增待办=>", res);
+              // this.$store.dispatch("addItem", this.inputArry);
+              // this.inputArry = "";
+              // this.text = "";
+              // this.input_deadline = "";
+              // this.input_reminder = "";
+              // console.log(this.$store.items);
             } else {
               alert("网络错误:" + res.data.message);
             }
@@ -156,12 +169,6 @@ export default {
           .catch((err) => {
             return err;
           });
-        this.$store.dispatch("addItem", this.inputArry);
-        this.inputArry = "";
-        this.text = "";
-        this.input_deadline = "";
-        this.input_reminder = "";
-        console.log(this.$store.items);
       }
     },
     del_time(type) {

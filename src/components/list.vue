@@ -5,36 +5,35 @@
       <li
         class="todo-item"
         v-for="(item, index) in todoList"
-        v-bind:key="index + item.name"
+        :key="index + item.uuid"
       >
-      {{ "========="+ item.status }}
-        <i
-          class="fa fa-square-o todo-done"
-          aria-hidden="true"
-          @click="updateItem(item, 'done')"
-          title="完成"
-        ></i>
-        <i
-          v-if="item.status!='doing'"
-          class="fa fa-play-circle-o fa-2x todo-start"
-          aria-hidden="true"
-          @click="updateItem(item, 'doing')"
-          title="开始"
-        ></i>
-        <i
-          v-else-if="item.status=='doing'"
-          class="fa fa-spinner fa-pulse fa-2x todo-start"
-          aria-hidden="true"
-          @click="updateItem(item, 'stop')"
-          title="暂停"
-        ></i>
-        <p>
-          <span>{{ index + 1 }}. {{ item.name }}</span
-          ><br />
-          <span class="todo-time" v-if="item.deadline"
-            >截止时间: {{ chGMT(item.deadline) }}</span
-          >
-        </p>
+          <i
+            class="fa fa-square-o todo-done"
+            aria-hidden="true"
+            @click="updateItem(item, 'done')"
+            title="完成"
+          ></i>
+          <i
+            v-if="item.status != 'doing'"
+            class="fa fa-play-circle-o fa-2x todo-start"
+            aria-hidden="true"
+            @click="updateItem(item, 'doing')"
+            title="开始"
+          ></i>
+          <i
+            v-else-if="item.status == 'doing'"
+            class="fa fa-spinner fa-pulse fa-2x todo-start"
+            aria-hidden="true"
+            @click="updateItem(item, 'stop')"
+            title="暂停"
+          ></i>
+          <p>
+            <span>{{ index + 1 }}. {{ item.name }}</span
+            ><br />
+            <span class="todo-time" v-if="item.deadline"
+              >截止时间: {{ chGMT(item.deadline) }}</span
+            >
+          </p>
       </li>
     </ul>
     <div class="todo-nodata" v-show="!todoList.length">
@@ -60,9 +59,9 @@ export default {
   data() {
     return {
       chGMT(gmtDate) {
-        console.log("转换时间前=>",gmtDate);
-        let mydate = this.$moment(gmtDate)
-        console.log("mydate=>",mydate.hour());
+        console.log("转换时间前=>", gmtDate);
+        let mydate = this.$moment(gmtDate);
+        console.log("mydate=>", mydate.hour());
         let now_date = this.$moment(new Date());
         let print_date;
         if (mydate.year() == now_date.year()) {
@@ -73,12 +72,13 @@ export default {
           } else if (mydate.date() == now_date.date() + 2) {
             print_date = "后天" + " " + mydate.format("hh:mm:ss");
           } else {
-            print_date = mydate.format("YYYY-MM-DD HH:mm:ss")
+            print_date = mydate.format("YYYY-MM-DD HH:mm:ss");
           }
         }
         return print_date;
       },
       showModal: false,
+      showStop: false,
     };
   },
   components: {
@@ -126,7 +126,6 @@ export default {
     },
     updateItem(item, status) {
       let update_status = {};
-      update_status.id = item.id;
       update_status.status = status;
       update_status.time = this.$moment(new Date()).format("X");
       for (let i = 0; i < this.$store.state.items.length; i++) {
@@ -145,8 +144,20 @@ export default {
         .post("/todo/post", this.$store.state.items[update_status.index])
         .then((res) => {
           if (res.data.code == 0) {
-            
-            console.log("更新后端DB=>", res);
+            this.$https
+              .get("/todo")
+              .then((res) => {
+                this.readStatusDoing = false;
+                if (res.data.code == 0) {
+                  console.log("读DB", res.data);
+                } else {
+                  console.log("读DB", res.data);
+                  this.$store.dispatch("readItems", res.data);
+                }
+              })
+              .catch((err) => {
+                return err;
+              });
           } else {
             // this.$store.state.items[update_status.index] = back_data
             console.log(back_data);

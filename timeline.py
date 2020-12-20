@@ -44,7 +44,9 @@ def get_todo_details_all():
                 "use_time": res_temp.use_time,
                 "progress_bar": res_temp.progress_bar,
                 "deadline": res_temp.deadline,
-                "reminder_time": res_temp.reminder_time
+                "reminder_time": res_temp.reminder_time,
+                "uuid": res_temp.uuid,
+                "type": None
             }
             json_data.append(data)
             print(json_data)
@@ -69,6 +71,7 @@ def get_todo_details(status):
                 "end_time": res_temp.end_time,
                 "use_time": res_temp.use_time,
                 "progress_bar": res_temp.progress_bar,
+                "uuid": res_temp.uuid
             }
             json_data.append(data)
             print(json_data)
@@ -79,7 +82,7 @@ def get_todo_details(status):
 
 @app.route("/api/todo/post",methods=["POST"],endpoint="post_todo_details")
 def post_todo_details():
-    # 判断数据有没有ID 字段，有的话就更新ID，没有就insert
+    # 判断数据有没有UUID 字段，没有UUID
     res = request.json
     if not isinstance(res,list):
         temp = []
@@ -110,10 +113,50 @@ def post_todo_details():
                     str_end_time = todo.get("end_time")
             else:
                 str_end_time = None
-            row = ToDoDetails.query.filter(ToDoDetails.name==todo["name"]).first()
-            if row != None:
+            # row = ToDoDetails.query.filter(ToDoDetails.name==todo["name"]).first()
+
+            # 新待办
+            if todo.get("type")  == "create":
+                print(f"插入的name是{todo['name']}")
+                name=todo.get("name")
+                uuid=todo.get("uuid")
+                status=todo.get("status","create")
+                create_time=time.time()
+                level=todo.get("level")
+                sub_todo_id=todo.get("sub_todo_id")
+                start_time=str_start_time
+                end_time=str_end_time
+                use_time=todo.get("use_time")
+                progress_bar=todo.get("progress_bar")
+                deadline=todo.get("deadline")
+                reminder_time=todo.get("reminder_time")
+                data = ToDoDetails(
+                    name=name,
+                    uuid=uuid,
+                    status=status,
+                    create_time=create_time,
+                    level=level,
+                    sub_todo_id=sub_todo_id,
+                    start_time=start_time,
+                    end_time=end_time,
+                    use_time=use_time,
+                    progress_bar=progress_bar,
+                    deadline=deadline,
+                    reminder_time=reminder_time
+                )
+                event = EventTimeLine(
+                    event_todo_id=None,
+                    event_type="create_todo",
+                    event_time=time.time(),
+                    event_valid="True",
+                    event_conn=f"新增了待办事项:\n\t子待办：{sub_todo_id}\n\t名称：{name}\n\t优先级：{level}\n\t截止时间：{deadline}\n\t提醒时间：{reminder_time}"
+                )
+                db.session.add(data)
+                db.session.add(event)
+            elif todo.get("type") == "update":
                 # 旧待办，要更新，现在是全量更新，以后再优化吧
-                # row = ToDoDetails.query.filter(ToDoDetails.id==todo["id"]).first()
+                print(f"todo:{todo}")
+                row = ToDoDetails.query.filter(ToDoDetails.uuid==todo["uuid"]).first()
                 print(f"更改的ID是{row.id}")
                 todo_id = todo.get("id")
                 name=todo.get("name")
@@ -168,42 +211,6 @@ def post_todo_details():
                         event_conn=f"更新内容：\n{ev_str}"
                     )
                     db.session.add(event)
-            # 新待办
-            elif row == None:
-                print(f"插入的name是{todo['name']}")
-                name=todo.get("name")
-                status=todo.get("status","create")
-                create_time=time.time()
-                level=todo.get("level")
-                sub_todo_id=todo.get("sub_todo_id")
-                start_time=str_start_time
-                end_time=str_end_time
-                use_time=todo.get("use_time")
-                progress_bar=todo.get("progress_bar")
-                deadline=todo.get("deadline")
-                reminder_time=todo.get("reminder_time")
-                data = ToDoDetails(
-                    name=name,
-                    status=status,
-                    create_time=create_time,
-                    level=level,
-                    sub_todo_id=sub_todo_id,
-                    start_time=start_time,
-                    end_time=end_time,
-                    use_time=use_time,
-                    progress_bar=progress_bar,
-                    deadline=deadline,
-                    reminder_time=reminder_time
-                )
-                event = EventTimeLine(
-                    event_todo_id=None,
-                    event_type="create_todo",
-                    event_time=time.time(),
-                    event_valid="True",
-                    event_conn=f"新增了待办事项:\n\t子待办：{sub_todo_id}\n\t名称：{name}\n\t优先级：{level}\n\t截止时间：{deadline}\n\t提醒时间：{reminder_time}"
-                )
-                db.session.add(data)
-                db.session.add(event)
             
         try:
             db.session.commit()
@@ -218,5 +225,5 @@ def post_todo_details():
                 return double_name
             return {"code":0,"new_items":new_items}
         except Exception as e:
-            return {"code":1,"message":f"{res}不是合法的输入","error":f"{e}"}
+            return {"code":1,"message":f"{res}不是合法的输入,error:{e}"}
     return "{code:0}"

@@ -27,8 +27,9 @@ export default {
         .then((res)=>{
           this.readStatusDoing = false;
           if (res.data.code == 0){
-            console.log(res.data);
+            console.log("读DB",res.data);
           }else{
+            console.log("读DB",res.data);
             this.$store.dispatch("readItems", res.data);
           }
         })
