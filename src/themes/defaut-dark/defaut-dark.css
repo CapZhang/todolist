@@ -193,10 +193,11 @@ html {
 
 .todo-start {
   float: right;
-  line-height: 40px;
+  line-height: 36px;
   text-align: center;
   color: rgb(16, 143, 54);
   margin-right: 8px;
+  margin-top: 1px;
   cursor: pointer;
 }
 .todo-time {
@@ -216,4 +217,26 @@ html {
 }
 .todo-done-list {
   height: 300px;
+}
+
+.sub-todo-list {
+  border-top:solid 0.5px rgb(233, 231, 223);
+  border-bottom:solid 0.5px rgb(233, 231, 223);
+  margin-top: 20px;
+}
+.sub-todo-item{
+  /* display: flex; */
+  height: 40px;
+  /* display: table-cell; */
+  padding-top: 2px;
+  padding-left: 20px;
+  padding-bottom: 2px;
+  vertical-align: middle;
+  border-bottom: solid 0.5px rgb(233, 231, 223);
+  border-top: solid 0.5px rgb(233, 231, 223);
+}
+
+.sub-todo-item:hover {
+  background-color: darkgray;
+  border-color: darkgray;
 }

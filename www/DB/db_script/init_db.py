@@ -46,6 +46,8 @@ class ToDoDetails(db.Model):
     level = db.Column(db.String, unique=False, nullable=True)
     # 子待办ID，可为空
     sub_todo_id = db.Column(db.String, nullable=True)
+    # 父待办
+    father_todo_id = db.Column(db.String, nullable=True)
     # 开始时间和结束时间，列表
     start_time = db.Column(db.String, unique=False, nullable=True)
     end_time = db.Column(db.String, unique=False, nullable=True)

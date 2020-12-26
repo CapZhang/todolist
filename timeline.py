@@ -1,5 +1,5 @@
 from www.init.init_app import app
-from www.DB.db_script.init_db import db,User,ToDoDetails,EventTimeLine,datetime,and_,or_,not_
+from www.DB.db_script.init_db import db,User,ToDoDetails,EventTimeLine,datetime,and_,or_,not_,in_
 from flask import jsonify,request
 from win10toast import ToastNotifier
 import time
@@ -23,6 +23,7 @@ def get_todo_details_all():
     if res:
         json_data = []
         for res_temp in res:
+            sub_list = []
             if res_temp.start_time:
                 start_time = res_temp.start_time.split(",")
             else:
@@ -32,6 +33,14 @@ def get_todo_details_all():
                 end_time = res_temp.end_time.split(",")
             else:
                 end_time = None
+            if res_temp.sub_todo_id != None:
+                if not isinstance(res_temp.sub_todo_id,list):
+                    tmp = []
+                    tmp.append(res_temp.sub_todo_id)
+                else:
+                    tmp = res_temp.sub_todo_id
+                sub_row = ToDoDetails.query.filter(ToDoDetails.id.in_(sub_id)).first()
+                sub_list.append(sub_row)
             data = {
                 "id": res_temp.id,
                 "name": res_temp.name,
@@ -39,6 +48,7 @@ def get_todo_details_all():
                 "status": res_temp.status,
                 "level": res_temp.level,
                 "sub_todo_id": res_temp.sub_todo_id,
+                "sub_list": sub_list,
                 "start_time": start_time,
                 "end_time": end_time,
                 "use_time": res_temp.use_time,
@@ -50,6 +60,8 @@ def get_todo_details_all():
             }
             json_data.append(data)
             print(json_data)
+
+
         return jsonify(json_data)
     else:
         return {"code":0}

@@ -2,11 +2,8 @@
   <section>
     <div class="clear-float"></div>
     <ul class="todo-list myscrollbar" v-show="todoList.length">
-      <li
-        class="todo-item"
-        v-for="(item, index) in todoList"
-        :key="index + item.uuid"
-      >
+      <li v-for="(item, index) in todoList" :key="index + item.uuid">
+        <div class="todo-item">
           <i
             class="fa fa-square-o todo-done"
             aria-hidden="true"
@@ -34,6 +31,40 @@
               >截止时间: {{ chGMT(item.deadline) }}</span
             >
           </p>
+        </div>
+        <template class="sub-todo-item" v-if="item.sub_todo_id!=null">
+          <ul>
+            <li v-for="(subitem, index) in item.sub_todo_id" :key="index + subitem.uuid">
+              <i
+                class="fa fa-square-o todo-done"
+                aria-hidden="true"
+                @click="updateItem(subitem, 'done')"
+                title="完成"
+              ></i>
+              <i
+                v-if="subitem.status != 'doing'"
+                class="fa fa-play-circle-o fa-2x todo-start"
+                aria-hidden="true"
+                @click="updateItem(subitem, 'doing')"
+                title="开始"
+              ></i>
+              <i
+                v-else-if="subitem.status == 'doing'"
+                class="fa fa-spinner fa-pulse fa-2x todo-start"
+                aria-hidden="true"
+                @click="updateItem(subitem, 'stop')"
+                title="暂停"
+              ></i>
+              <p>
+                <span>{{ index + 1 }}. {{ subitem.name }}</span
+                ><br />
+                <span class="todo-time" v-if="subitem.deadline"
+                  >截止时间: {{ chGMT(subitem.deadline) }}</span
+                >
+              </p>
+            </li>
+          </ul>
+        </template>
       </li>
     </ul>
     <div class="todo-nodata" v-show="!todoList.length">
@@ -54,6 +85,7 @@
 //http://www.fontawesome.com.cn/
 import "../assets/font-awesome/css/font-awesome.min.css";
 import todoDomeModalBox from "./todoDoneModalBox";
+// import subItems from "./subTodo";
 
 export default {
   data() {
@@ -83,6 +115,7 @@ export default {
   },
   components: {
     todoDomeModalBox,
+    // subItems,
   },
   computed: {
     todoList: function () {
@@ -130,15 +163,15 @@ export default {
       update_status.time = this.$moment(new Date()).format("X");
       for (let i = 0; i < this.$store.state.items.length; i++) {
         if (item.id) {
-          console.log("item.id=>",item.id);
-          if (this.$store.state.items[i].id == item.id){
+          console.log("item.id=>", item.id);
+          if (this.$store.state.items[i].id == item.id) {
             update_status.index = i;
           }
-        }else if(this.$store.state.items[i].name == item.name){
+        } else if (this.$store.state.items[i].name == item.name) {
           update_status.index = i;
         }
       }
-      let back_data = this.$store.state.items[update_status.index]
+      let back_data = this.$store.state.items[update_status.index];
       this.$store.dispatch("updateItems", update_status);
       this.$https
         .post("/todo/post", this.$store.state.items[update_status.index])
